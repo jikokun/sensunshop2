@@ -10,11 +10,15 @@ import androidx.navigation.compose.rememberNavController
 import com.example.sensunshop2.ui.screens.HomeScreen
 import com.example.sensunshop2.ui.screens.OnboardingScreen
 import com.example.sensunshop2.ui.screens.SplashScreen
+import com.example.sensunshop2.ui.screens.LoginScreen
+import com.example.sensunshop2.ui.screens.AdminDashboardScreen
 
 sealed class Screen(val route: String) {
     object Splash : Screen("splash")
     object Onboarding : Screen("onboarding")
     object Home : Screen("home")
+    object Login : Screen("login")
+    object AdminDashboard : Screen("admin_dashboard")
 }
 
 @Composable
@@ -53,7 +57,32 @@ fun AppNavigation(
             )
         }
         composable(Screen.Home.route) {
-            HomeScreen()
+            HomeScreen(
+                onNavigateToAdmin = {
+                    navController.navigate(Screen.Login.route)
+                }
+            )
+        }
+        composable(Screen.Login.route) {
+            LoginScreen(
+                onLoginSuccess = {
+                    navController.navigate(Screen.AdminDashboard.route) {
+                        popUpTo(Screen.Login.route) { inclusive = true }
+                    }
+                },
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+        composable(Screen.AdminDashboard.route) {
+            AdminDashboardScreen(
+                onLogout = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.AdminDashboard.route) { inclusive = true }
+                    }
+                }
+            )
         }
     }
 }

@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -65,6 +66,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -84,7 +86,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    onNavigateToAdmin: () -> Unit = {}
+) {
     var backPressedOnce by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -139,7 +143,10 @@ fun HomeScreen() {
                     .verticalScroll(rememberScrollState())
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
-                HomeTopBar(modifier = Modifier.padding(horizontal = 24.dp))
+                HomeTopBar(
+                    onLogoLongClick = onNavigateToAdmin,
+                    modifier = Modifier.padding(horizontal = 24.dp)
+                )
                 Spacer(modifier = Modifier.height(24.dp))
                 HomeSearchBar(modifier = Modifier.padding(horizontal = 24.dp))
                 Spacer(modifier = Modifier.height(24.dp))
@@ -164,13 +171,35 @@ fun HomeScreen() {
 }
 
 @Composable
-fun HomeTopBar(modifier: Modifier = Modifier) {
+fun HomeTopBar(
+    modifier: Modifier = Modifier,
+    onLogoLongClick: () -> Unit = {}
+) {
+    val coroutineScope = rememberCoroutineScope()
+    
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.pointerInput(Unit) {
+                detectTapGestures(
+                    onPress = {
+                        val job = coroutineScope.launch {
+                            delay(10000) // 10 segundos
+                            onLogoLongClick()
+                        }
+                        try {
+                            awaitRelease()
+                        } finally {
+                            job.cancel()
+                        }
+                    }
+                )
+            }
+        ) {
             AsyncImage(
                 model = "file:///android_asset/images/iconosensunshop.webp",
                 contentDescription = "Logo Sensun Shop",
