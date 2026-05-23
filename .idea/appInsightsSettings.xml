@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="com.example.sensunshop2" />
-                  <option name="mobileSdkAppId" value="1:1021883842600:android:d05a7982b3b0bdbabf751d" />
-                  <option name="projectId" value="sensunshop2" />
-                  <option name="projectNumber" value="1021883842600" />
+                  <option name="appId" value="PLACEHOLDER" />
+                  <option name="mobileSdkAppId" value="" />
+                  <option name="projectId" value="" />
+                  <option name="projectNumber" value="" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
